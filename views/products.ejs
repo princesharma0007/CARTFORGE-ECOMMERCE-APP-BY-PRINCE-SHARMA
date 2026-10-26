@@ -1,0 +1,16 @@
+<%- include('partials/head', { title: 'Products' , user: user }) %>
+<%- include('partials/header', { title: 'Products' , user: user }) %>
+<main class="max-w-6xl mx-auto px-5 py-10">
+  <h1 class="text-3xl font-bold">Explore Products</h1>
+  <p class="text-gray-600 mt-2 mb-8">Discover gaming gear, accessories, and more.</p>
+  <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    <%- include('partials/product-cards', { products }) %>
+  </div>
+  <% if (!products.length) { %><p>No products available yet.</p><% } %>
+  <div class="text-center mt-8">
+    <button id="load-more" type="button" data-cursor="<%= nextCursor || '' %>" class="bg-gray-900 text-white px-5 py-2 rounded <%= nextCursor ? '' : 'hidden' %>">Load More</button>
+    <p id="load-error" class="text-red-600 mt-2" role="status"></p>
+  </div>
+</main>
+<script src="/pagination.js" defer></script>
+<%- include('partials/footer') %>

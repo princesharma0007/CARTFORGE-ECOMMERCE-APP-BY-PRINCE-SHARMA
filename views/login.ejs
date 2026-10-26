@@ -1,0 +1,20 @@
+<%- include('partials/head', { title: 'Login' }) %>
+<%- include('partials/header') %>
+<main class="max-w-md mx-auto  px-10 py-24 mt-12">
+  <h1 class="text-2xl font-bold">Welcome back</h1>
+  <p class="text-gray-600 text-sm mt-2">Log in to your CARTFORGE account.</p>
+  <%- include('partials/message') %>
+  <form method="POST" action="/login" class="mt-6">
+      <div class="mt-4">
+        <label for="email" class="block text-sm font-medium mb-1">Email</label>
+        <input id="email" name="email" type="email"  required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-900">
+      </div>
+      <div class="mt-4">
+        <label for="password" class="block text-sm font-medium mb-1">Password</label>
+        <input id="password" name="password" type="password"  required class="w-full border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-gray-900">
+      </div>
+    <button type="submit" class="w-full bg-gray-900 text-white rounded py-2.5 mt-6 hover:bg-gray-800">Log in</button>
+  </form>
+  <p class="text-sm text-gray-600 mt-5 leading-7"><a href="/forgot-password" class="underline">Forgot password?</a><br>New here? <a href="/signup" class="underline font-medium">Sign up</a></p>
+</main>
+

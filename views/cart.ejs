@@ -1,0 +1,195 @@
+
+<%- include('partials/head', { title: 'Cart'}) %>
+<%- include('partials/header', { title: 'Cart' , user: user }) %>
+
+<main class="max-w-6xl mx-auto px-5 py-10">
+
+  <div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900">Shopping Cart</h1>
+    <p class="text-gray-500 mt-2">
+      Review your items before checkout.
+    </p>
+  </div>
+
+  <p id="cart-sync-error" role="status"
+     class="text-red-600 mb-4"></p>
+
+  <% if (!items.length) { %>
+
+    <div class="border border-gray-200 rounded-xl py-20 px-5 text-center">
+
+      <div class="text-5xl mb-5">🛒</div>
+
+      <h2 class="text-2xl font-semibold text-gray-900">
+        Your cart is empty
+      </h2>
+
+      <p class="text-gray-500 mt-3">
+        Looks like you haven't added any products yet.
+      </p>
+
+      <a href="/products"
+         class="inline-block mt-7 bg-gray-900 text-white px-7 py-3 rounded-lg hover:bg-gray-700 transition">
+        Explore Products
+      </a>
+
+    </div>
+
+  <% } else { %>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+      <div class="lg:col-span-2 space-y-4">
+
+        <% items.forEach(item => { %>
+
+          <div class="border border-gray-200 rounded-xl p-5 flex flex-col sm:flex-row gap-5">
+
+            <a href="/products/<%= item.product._id %>"
+               class="sm:w-32 h-36 sm:h-32 bg-gray-50 rounded-lg flex items-center justify-center p-3 shrink-0">
+
+              <% if (item.product.image) { %>
+
+                <img
+                  src="<%= item.product.image %>"
+                  alt="<%= item.product.name %>"
+                  class="w-full h-full object-contain"
+                  loading="lazy"
+                >
+
+              <% } else { %>
+
+                <span class="text-gray-400 text-xs">
+                  No Image
+                </span>
+
+              <% } %>
+
+            </a>
+
+            <div class="flex-1 min-w-0">
+
+              <p class="text-xs uppercase tracking-wide text-gray-500 mb-2">
+                <%= item.product.category %>
+              </p>
+
+              <a href="/products/<%= item.product._id %>"
+                 class="text-lg font-semibold text-gray-900 hover:underline">
+                <%= item.product.name %>
+              </a>
+
+              <p class="text-gray-500 text-sm mt-2">
+                ₹<%= item.product.price.toLocaleString('en-IN') %> each
+              </p>
+
+              <p class="text-lg font-bold text-gray-900 mt-2">
+                ₹<%= (item.product.price * item.quantity).toLocaleString('en-IN') %>
+              </p>
+
+              <div class="flex flex-wrap items-center gap-4 mt-5">
+
+                <div class="inline-flex items-center border border-gray-300 rounded-lg overflow-hidden">
+
+                  <button
+                    type="button"
+                    class="px-3 py-2 hover:bg-gray-100"
+                    aria-label="Decrease quantity"
+                    data-id="<%= item.product._id %>"
+                    data-quantity="<%= item.quantity - 1 %>"
+                    onclick="updateCart(this.dataset.id, Number(this.dataset.quantity))">
+                    −
+                  </button>
+
+                  <span class="px-4 py-2 text-sm font-semibold border-x border-gray-300">
+                    <%= item.quantity %>
+                  </span>
+
+                  <button
+                    type="button"
+                    class="px-3 py-2 hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed"
+                    aria-label="Increase quantity"
+                    data-id="<%= item.product._id %>"
+                    data-quantity="<%= item.quantity + 1 %>"
+                    <% if (item.quantity >= item.product.stock) { %>
+                      disabled
+                    <% } %>
+                    onclick="updateCart(this.dataset.id, Number(this.dataset.quantity))">
+                    +
+                  </button>
+
+                </div>
+
+                <button
+                  type="button"
+                  data-id="<%= item.product._id %>"
+                  onclick="updateCart(this.dataset.id, 0)"
+                  class="text-sm font-medium text-red-600 hover:text-red-800 hover:underline">
+                  Remove
+                </button>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        <% }) %>
+
+        <a href="/products"
+           class="inline-flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-gray-900 mt-4">
+          ← Continue Shopping
+        </a>
+
+      </div>
+
+      <div class="border border-gray-200 rounded-xl p-6 lg:sticky lg:top-24">
+
+        <h2 class="text-xl font-bold text-gray-900 mb-6">
+          Order Summary
+        </h2>
+
+        <div class="flex justify-between text-gray-600 mb-4">
+          <span>Items</span>
+          <span><%= items.reduce((sum, item) => sum + item.quantity, 0) %></span>
+        </div>
+
+        <div class="flex justify-between text-gray-600 mb-4">
+          <span>Subtotal</span>
+          <span>₹<%= total.toLocaleString('en-IN') %></span>
+        </div>
+
+        <div class="flex justify-between text-gray-600 mb-5">
+          <span>Shipping</span>
+          <span class="text-gray-500">Calculated at checkout</span>
+        </div>
+
+        <div class="border-t border-gray-200 pt-5 flex justify-between items-center">
+
+          <span class="font-semibold text-gray-900">Total</span>
+
+          <span class="text-2xl font-bold text-gray-900">
+            ₹<%= total.toLocaleString('en-IN') %>
+          </span>
+
+        </div>
+
+        <button
+          type="button"
+          id="checkout-button"
+          class="w-full bg-gray-900 text-white font-medium py-3.5 rounded-lg mt-6 hover:bg-gray-700 transition">
+          Proceed to Checkout
+        </button>
+
+        <p class="text-center text-xs text-gray-500 mt-4">
+          Secure payment via Razorpay
+        </p>
+
+      </div>
+
+    </div>
+
+  <% } %>
+
+</main>
+
+<%- include('partials/footer') %>

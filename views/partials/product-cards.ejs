@@ -1,0 +1,76 @@
+
+<% products.forEach(product => { %>
+
+  <div class="border border-gray-200 rounded-xl p-4 flex flex-col h-full hover:border-gray-900 transition">
+
+    <a href="/products/<%= product._id %>"
+       class="w-full h-52 bg-gray-50 rounded-lg flex items-center justify-center p-3">
+
+      <% if (product.image) { %>
+        <img
+          src="<%= product.image %>"
+          alt="<%= product.name %>"
+          class="w-full h-full object-contain"
+          loading="lazy"
+        >
+      <% } else { %>
+        <span class="text-gray-400 text-sm">No Image</span>
+      <% } %>
+
+    </a>
+
+    <div class="flex flex-col flex-1 mt-4">
+
+      <h2 class="font-semibold text-lg text-gray-900 line-clamp-2">
+        <%= product.name %>
+      </h2>
+
+      <p class="text-xs uppercase tracking-wide text-gray-500 mt-2">
+        <%= product.category %>
+      </p>
+
+      <p class="text-sm text-gray-600 mt-3 line-clamp-2">
+        <%= product.description %>
+      </p>
+
+      <div class="mt-auto pt-5">
+
+        <p class="font-bold text-xl text-gray-900">
+          ₹<%= (product.price || 0).toLocaleString('en-IN') %>
+        </p>
+
+        <p class="text-sm mt-2">
+          <% if (product.stock > 0) { %>
+            <span class="text-green-700">
+              In Stock (<%= product.stock %>)
+            </span>
+          <% } else { %>
+            <span class="text-red-600">Out of Stock</span>
+          <% } %>
+        </p>
+
+        <div class="grid grid-cols-2 gap-2 mt-4">
+
+          <button
+            type="button"
+            data-id="<%= product._id %>"
+            onclick="addToCart(this.dataset.id)"
+            <% if (product.stock < 1) { %>disabled<% } %>
+            class="bg-gray-900 text-white px-3 py-2.5 rounded-lg text-sm font-medium hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed">
+            Add to Cart
+          </button>
+
+          <a href="/products/<%= product._id %>"
+             class="border border-gray-900 text-gray-900 px-3 py-2.5 rounded-lg text-sm font-medium text-center hover:bg-gray-100">
+            View Details
+          </a>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+<% }) %>

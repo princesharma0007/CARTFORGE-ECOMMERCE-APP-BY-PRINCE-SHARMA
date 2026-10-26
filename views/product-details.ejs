@@ -1,0 +1,132 @@
+
+<%- include('partials/head', { title: product.name }) %>
+<%- include('partials/header') %>
+
+<main class="max-w-6xl mx-auto px-5 py-10">
+
+  <div class="mb-8">
+    <a href="/products"
+       class="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-gray-900 transition">
+      <span>←</span> Back to Products
+    </a>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-16">
+
+    <div class="bg-gray-50 border border-gray-200 rounded-xl p-6 flex items-center justify-center min-h-[350px] md:min-h-[480px]">
+
+      <% if (product.image) { %>
+        <img
+          src="<%= product.image %>"
+          alt="<%= product.name %>"
+          class="w-full h-80 md:h-96 object-contain hover:scale-105 transition-transform duration-300"
+          onerror="this.src='/images/placeholder.png'"
+        >
+      <% } else { %>
+        <p class="text-gray-400">Image not available</p>
+      <% } %>
+
+    </div>
+
+    <div class="flex flex-col justify-center">
+
+      <div class="mb-4">
+        <span class="inline-block bg-gray-100 text-gray-700 text-xs font-medium uppercase tracking-wide px-3 py-1.5 rounded-md">
+          <%= product.category %>
+        </span>
+      </div>
+
+      <h1 class="text-3xl md:text-4xl font-bold text-gray-900 leading-tight">
+        <%= product.name %>
+      </h1>
+
+      <div class="mt-6 pb-6 border-b border-gray-200">
+
+        <p class="text-sm text-gray-500 mb-2">Product Price</p>
+
+        <p class="text-3xl font-bold text-gray-900">
+          ₹<%= product.price.toLocaleString('en-IN') %>
+        </p>
+
+        <p class="text-xs text-gray-500 mt-2">
+          Inclusive of all applicable taxes
+        </p>
+
+      </div>
+
+      <div class="mt-6">
+
+        <h2 class="text-lg font-semibold text-gray-900 mb-3">
+          Product Description
+        </h2>
+
+        <p class="text-gray-600 leading-7">
+          <%= product.description %>
+        </p>
+
+      </div>
+
+      <div class="mt-6">
+
+        <% if (product.stock > 0) { %>
+
+          <div class="flex items-center gap-2 text-sm">
+            <span class="w-2.5 h-2.5 bg-green-500 rounded-full"></span>
+            <span class="font-medium text-green-700">In Stock</span>
+            <span class="text-gray-500">
+              (<%= product.stock %> available)
+            </span>
+          </div>
+
+        <% } else { %>
+
+          <div class="flex items-center gap-2 text-sm">
+            <span class="w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+            <span class="font-medium text-red-600">
+              Currently Out of Stock
+            </span>
+          </div>
+
+        <% } %>
+
+      </div>
+
+      <div class="mt-8">
+
+        <button
+          type="button"
+          onclick="addToCart('<%= product._id %>')"
+          <%= product.stock <= 0 ? 'disabled' : '' %>
+          class="w-full sm:w-auto bg-gray-900 text-white px-10 py-3.5 rounded-lg font-medium hover:bg-gray-700 transition disabled:bg-gray-300 disabled:cursor-not-allowed">
+
+          <%= product.stock > 0 ? 'Add to Cart' : 'Out of Stock' %>
+
+        </button>
+
+      </div>
+
+      <div class="mt-8 pt-6 border-t border-gray-200">
+
+        <div class="grid grid-cols-2 gap-4 text-sm text-gray-600">
+
+          <div class="flex items-center gap-2">
+            <span>✓</span>
+            <span>Secure Checkout</span>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <span>✓</span>
+            <span>Easy Shopping</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+
+<%- include('partials/footer') %>

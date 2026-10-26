@@ -1,0 +1,55 @@
+
+<header class="bg-gray-900 text-white w-full">
+
+  <div class="max-w-6xl mx-auto px-5 py-4 flex flex-wrap items-center justify-between gap-4">
+
+    <a href="/dashboard" class="text-xl font-bold text-white">
+      CARTFORGE
+    </a>
+
+    <nav class="flex flex-wrap items-center gap-5 text-sm">
+
+      <a href="/dashboard" class="hover:text-gray-300">
+        Dashboard
+      </a>
+
+      <a href="/products" class="hover:text-gray-300">
+        Products
+      </a>
+
+      <a href="/cart" class="hover:text-gray-300">
+        Cart
+      </a>
+
+      <% if (typeof user != 'undefined' && user) { %>
+
+        <a href="/profile" class="flex items-center gap-2">
+
+          <span class="w-9 h-9 bg-white text-gray-900 rounded-full flex items-center justify-center font-bold">
+            <%= user.username.charAt(0).toUpperCase() %>
+          </span>
+
+          <span class="font-medium">
+            <%= user.username %>
+          </span>
+
+        </a>
+
+      <% } else { %>
+
+        <a href="/login" class="hover:text-gray-300">
+          Login
+        </a>
+
+        <a href="/signup"
+           class="bg-white text-gray-900 px-4 py-2 rounded-md font-medium hover:bg-gray-200">
+          Signup
+        </a>
+
+      <% } %>
+
+    </nav>
+
+  </div>
+
+</header>
