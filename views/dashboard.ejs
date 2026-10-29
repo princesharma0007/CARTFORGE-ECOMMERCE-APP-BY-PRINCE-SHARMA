@@ -132,7 +132,7 @@
   </form>
   <% } %>
 <script>
-  console.log(user.username);
+  console.log(<%- JSON.stringify(user ? user.username : "Guest") %>);
 </script>
 </main>
 

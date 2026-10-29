@@ -17,9 +17,8 @@
         Products
       </a>
 
-      <a href="/cart" class="hover:text-gray-300">
-        Cart
-      </a>
+      <a href="/cart" class="hover:text-gray-300">Cart</a>
+      <% if (typeof user != 'undefined' && user) { %><a href="/orders" class="hover:text-gray-300">Orders</a><% } %>
 
       <% if (typeof user != 'undefined' && user) { %>
 

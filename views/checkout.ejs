@@ -1,0 +1,176 @@
+
+<%- include('partials/head', { title: 'Checkout' }) %>
+<%- include('partials/header', { user }) %>
+
+<main class="max-w-5xl mx-auto p-5 py-10">
+  <h1 class="text-3xl font-bold mb-6">Checkout</h1>
+
+  <p class="mb-4 text-gray-600">
+    Select a saved delivery address or add a new one.
+    Payment opens only after an address is selected.
+  </p>
+
+  <div class="grid md:grid-cols-2 gap-8">
+    <section>
+      <h2 class="text-xl font-semibold mb-4">Saved addresses</h2>
+
+      <div class="space-y-3 mb-6" id="addresses">
+        <% const addresses = user.addresses || []; %>
+
+        <% if (addresses.length === 0) { %>
+          <p class="text-gray-500">No saved addresses. Add an address below.</p>
+        <% } %>
+
+        <% addresses.forEach(a => { %>
+          <div class="border rounded p-4">
+            <label class="flex gap-3 items-start cursor-pointer">
+              <input
+                type="radio"
+                name="address"
+                value="<%= a._id %>"
+                <%= a.isDefault ? 'checked' : '' %>
+              />
+
+              <span>
+                <strong><%= a.fullName %></strong>
+                <%= a.isDefault ? '(Default)' : '' %>
+                <br>
+                <%= a.addressLine1 %> <%= a.addressLine2 %>
+                <br>
+                <%= a.landmark %>
+                <br>
+                <%= a.city %>, <%= a.state %> - <%= a.pincode %>
+                <br>
+                Phone: <%= a.phone %>
+              </span>
+            </label>
+
+            <div class="flex gap-4 mt-2 text-sm underline">
+              <button
+                type="button"
+                class="edit-address"
+                data-id="<%= a._id %>"
+                data-full-name="<%= a.fullName %>"
+                data-phone="<%= a.phone %>"
+                data-address-line1="<%= a.addressLine1 %>"
+                data-address-line2="<%= a.addressLine2 %>"
+                data-landmark="<%= a.landmark %>"
+                data-city="<%= a.city %>"
+                data-state="<%= a.state %>"
+                data-pincode="<%= a.pincode %>"
+                data-default="<%= a.isDefault ? 'true' : 'false' %>"
+              >Edit</button>
+
+              <button
+                type="button"
+                onclick="deleteAddress('<%= a._id %>')"
+              >Delete</button>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <h2 class="text-xl font-semibold mb-3">Add / edit address</h2>
+
+      <form id="address-form" class="grid gap-3">
+        <input type="hidden" name="addressId" id="addressId">
+
+        <input class="border rounded p-3" name="fullName"
+               placeholder="Full name" maxlength="80" required>
+
+        <input class="border rounded p-3" name="phone"
+               placeholder="Mobile number" pattern="[6-9][0-9]{9}"
+               maxlength="10" required>
+
+        <input class="border rounded p-3" name="addressLine1"
+               placeholder="House / flat number, street"
+               maxlength="200" required>
+
+        <input class="border rounded p-3" name="addressLine2"
+               placeholder="Area / locality (optional)" maxlength="200">
+
+        <input class="border rounded p-3" name="landmark"
+               placeholder="Landmark (optional)" maxlength="100">
+
+        <input class="border rounded p-3" name="city"
+               placeholder="City" maxlength="80" required>
+
+        <input class="border rounded p-3" name="state"
+               placeholder="State" maxlength="80" required>
+
+        <input class="border rounded p-3" name="pincode"
+               placeholder="PIN code" pattern="[0-9]{6}"
+               maxlength="6" required>
+
+        <label>
+          <input type="checkbox" name="isDefault">
+          Set as default address
+        </label>
+
+        <div class="flex gap-2">
+          <button class="bg-gray-900 text-white rounded px-5 py-3"
+                  type="submit">Save address</button>
+          <button class="border rounded px-5 py-3"
+                  type="reset">Clear</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="border rounded p-5 h-fit">
+      <h2 class="text-xl font-semibold mb-4">Order summary</h2>
+
+      <% items.forEach(i => { %>
+        <div class="flex justify-between py-3 border-b gap-4">
+          <span><%= i.product.name %> × <%= i.quantity %></span>
+          <span>₹<%= (i.product.price * i.quantity).toLocaleString('en-IN') %></span>
+        </div>
+      <% }) %>
+
+      <div class="flex justify-between font-bold text-xl mt-5">
+        <span>Total</span>
+        <span>₹<%= total.toLocaleString('en-IN') %></span>
+      </div>
+
+      <p class="text-xs text-gray-500 my-3">
+        Shipping: ₹0 (no shipping fee configured)
+      </p>
+
+      <button id="pay-button"
+              class="w-full mt-4 bg-gray-900 text-white rounded p-4"
+              type="button">
+        Pay securely with Razorpay
+      </button>
+
+      <p id="checkout-error" role="alert"
+         class="text-red-600 mt-3"></p>
+
+      <a class="block underline mt-4" href="/cart">Back to cart</a>
+    </section>
+  </div>
+</main>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="/checkout.js"></script>
+
+<script>
+document.querySelectorAll('.edit-address').forEach(button => {
+  button.addEventListener('click', () => {
+    const d = button.dataset;
+
+    editAddress({
+      id: d.id,
+      fullName: d.fullName,
+      phone: d.phone,
+      addressLine1: d.addressLine1,
+      addressLine2: d.addressLine2,
+      landmark: d.landmark,
+      city: d.city,
+      state: d.state,
+      pincode: d.pincode,
+      isDefault: d.default === 'true'
+    });
+  });
+});
+</script>
+
+<%- include('partials/footer') %>

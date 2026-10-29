@@ -1,0 +1,11 @@
+<%- include('partials/head', { title: 'My Orders' }) %>
+<%- include('partials/header', { user }) %>
+<main class="max-w-5xl mx-auto p-5 py-10"><h1 class="text-3xl font-bold mb-6">My Orders</h1>
+<% if (!orders.length) { %><p>No orders yet.</p><% } %>
+<% orders.forEach(o => { %><section class="border rounded p-5 mb-4">
+  <p class="font-bold">Order <%= o._id %></p><p>Payment: <%= o.status %></p>
+  <p>Amount: ₹<%= (o.amount / 100).toLocaleString('en-IN') %></p>
+  <p>Delivery: <%= o.address.fullName %>, <%= o.address.addressLine1 %>, <%= o.address.addressLine2 %>, <%= o.address.city %>, <%= o.address.state %> - <%= o.address.pincode %></p>
+  <ul class="mt-3"><% o.items.forEach(i => { %><li><%= i.name %> × <%= i.quantity %></li><% }) %></ul>
+</section><% }) %>
+</main><%- include('partials/footer') %>
